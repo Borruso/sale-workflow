@@ -135,9 +135,9 @@ class SaleOrder(models.Model):
 
     def _create_invoices(self, grouped=False, final=False, date=None):
         moves = super()._create_invoices(grouped=grouped, final=final, date=date)
-        if self.use_invoice_plan:
+        for sale in self.filtered(lambda s: s.use_invoice_plan):
             plan = self.env["sale.invoice.plan"].search(
-                [("sale_id", "=", self.id)], limit=1
+                [("sale_id", "=", sale.id)], limit=1
             )
             for move in moves:
                 plan._compute_new_invoice_quantity(move)
